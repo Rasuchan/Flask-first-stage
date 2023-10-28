@@ -1,9 +1,104 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Rashmika Careers</title>
-  </head>
- <body>
-   You will learn about careers available at Rashmika
- </body> 
+<head>
+    <meta charset="utf-8" />
+    <title>Interactive Map with Video</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <style>
+        /* Define the size of the map container */
+        #map {
+            height: 400px;
+            width: 600px;
+        }
+    </style>
+  <style>
+      .survival-container {
+          position: relative;
+          width: 200px;
+          height: 300px;
+          border: 1px solid #ccc;
+          overflow: hidden;
+      }
+
+      .human-pic {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          background-image: url('./static/red_human.png'); /* Replace with your red human image */
+          background-size: 100%;
+      }
+
+      .blue-overlay {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          background-color: transparent;
+          background-image: linear-gradient(to bottom, transparent, blue);
+          background-size: 100% 100%;
+          transition: background-size 120s linear; /* Adjust transition duration as needed */
+      }
+
+      .survival-container:hover .blue-overlay {
+          background-size: 100% 100%;
+      }
+  </style>
+</head>
+<body>
+    <!-- Create a container for the map -->
+    <div id="map"></div>
+
+    <!-- Define a hidden video element with your default video -->
+    <video id="video" controls width="400" height="300" style="display: none">
+        <source src="./static/default video.mp4" type="video/mp4" >
+    </video>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+    <script>
+        // Initialize the map
+        var map = L.map('map').setView([51.505, -0.09], 13);
+
+        // Add a tile layer (you can replace this with your preferred map tile source)
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+        }).addTo(map);
+
+        // Add a marker at the specific point where you want to trigger the video
+        var marker = L.marker([51.5, -0.09]).addTo(map);
+
+        // When the marker is clicked, display the video
+        marker.on('click', function () {
+            var video = document.getElementById('video');
+            video.style.display = 'block';
+            video.play();
+        });
+    </script>
+  <div class="survival-container">
+      <div class="blue-overlay" id="survival-rate">
+          <div class="human-pic"></div>
+      </div>
+  </div>
+
+  <script>
+      // Set the initial default survival rate (e.g., 100%)
+      var initialSurvivalRate = 100;
+
+      // Calculate the height of the blue overlay based on the initial survival rate
+      var blueOverlay = document.getElementById('survival-rate');
+      var initialHeight = 100 - initialSurvivalRate; // Invert the initial survival rate
+      blueOverlay.style.height = initialHeight + '%';
+
+      // Simulate a decrease in survival rate (increase in blue color) over time
+      var decreaseInterval = setInterval(function () {
+          initialHeight += 1; // Adjust the rate of change as needed
+          blueOverlay.style.height = initialHeight + '%';
+
+          // When the blue overlay reaches a certain height, stop the decrease animation
+          if (initialHeight >= 100) {
+              clearInterval(decreaseInterval);
+          }
+      }, 100); // Adjust the interval time for a smoother or faster animation
+  </script>
+
+</body>
 </html>
